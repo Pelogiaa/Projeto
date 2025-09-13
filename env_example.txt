@@ -1,0 +1,16 @@
+# =====================================================
+# ARQUIVO DE CONFIGURAÇÃO DE AMBIENTE
+# Projeto: Clínica Veterinária
+# =====================================================
+
+# Configurações do Banco de Dados PostgreSQL
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=projeto_clinica_veterinaria
+DB_USER=postgres
+DB_PASSWORD=sua_senha_aqui
+
+# Configurações da Aplicação
+DEBUG=False
+LOG_LEVEL=INFO
+

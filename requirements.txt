@@ -1,0 +1,21 @@
+# =====================================================
+# DEPENDÊNCIAS DO PROJETO
+# Projeto: Clínica Veterinária
+# =====================================================
+
+# Banco de dados PostgreSQL
+psycopg2-binary==2.9.9
+
+# Gerenciamento de variáveis de ambiente
+python-dotenv==1.0.0
+
+# Validação de dados
+pydantic==2.5.0
+
+# Logging avançado
+colorlog==6.8.0
+
+# Utilitários para desenvolvimento
+pytest==7.4.3
+pytest-cov==4.1.0
+
