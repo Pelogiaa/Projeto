@@ -28,7 +28,7 @@ public class AnimalDTO {
     private String tipoAnimal;
     
     @NotBlank(message = "Sexo é obrigatório")
-    @Pattern(regexp = "^(Macho|Fêmea)$", message = "Sexo deve ser 'Macho' ou 'Fêmea'")
+    @Pattern(regexp = "^(Macho|Fêmea|FÃÂªmea)$", message = "Sexo deve ser 'Macho' ou 'Fêmea'")
     private String sexo;
     
     @NotNull(message = "Peso é obrigatório")
@@ -43,7 +43,6 @@ public class AnimalDTO {
     private String cor;
     
     private LocalDateTime dataCadastro;
-    private LocalDateTime dataAtualizacao;
     
     // Informações do cliente (para exibição)
     private String nomeCliente;
@@ -143,13 +142,6 @@ public class AnimalDTO {
         this.dataCadastro = dataCadastro;
     }
     
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
-    
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
     
     public String getNomeCliente() {
         return nomeCliente;
@@ -180,7 +172,6 @@ public class AnimalDTO {
                 ", raca='" + raca + '\'' +
                 ", cor='" + cor + '\'' +
                 ", dataCadastro=" + dataCadastro +
-                ", dataAtualizacao=" + dataAtualizacao +
                 ", nomeCliente='" + nomeCliente + '\'' +
                 ", emailCliente='" + emailCliente + '\'' +
                 '}';

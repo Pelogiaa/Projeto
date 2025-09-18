@@ -38,7 +38,6 @@ public class ClienteService {
         dto.setCep(cliente.getCep());
         dto.setCpf(cliente.getCpf());
         dto.setDataCadastro(cliente.getDataCadastro());
-        dto.setDataAtualizacao(cliente.getDataAtualizacao());
         return dto;
     }
     

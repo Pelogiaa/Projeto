@@ -14,6 +14,8 @@ const Servicos = () => {
   const [editingService, setEditingService] = useState(null);
   const [servicos, setServicos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   // Carregar dados da API
   useEffect(() => {
@@ -29,47 +31,27 @@ const Servicos = () => {
           {
             id: 1,
             nome: 'Consulta Veterinária',
-            descricao: 'Atendimento clínico completo para cães e gatos',
-            categoria: 'Consultas',
-            preco: 120.00,
-            status: 'Ativo',
-            observacoes: 'Inclui exame físico completo e orientações'
+            preco: 120.00
           },
           {
             id: 2,
             nome: 'Vacinação',
-            descricao: 'Aplicação de vacinas essenciais para pets',
-            categoria: 'Prevenção',
-            preco: 80.00,
-            status: 'Ativo',
-            observacoes: 'Vacinas V8, V10, antirrábica e outras'
+            preco: 80.00
           },
           {
             id: 3,
             nome: 'Cirurgia de Castração',
-            descricao: 'Procedimento cirúrgico para castração de cães e gatos',
-            categoria: 'Cirurgias',
-            preco: 350.00,
-            status: 'Ativo',
-            observacoes: 'Inclui anestesia e pós-operatório'
+            preco: 350.00
           },
           {
             id: 4,
             nome: 'Banho e Tosa',
-            descricao: 'Serviço completo de higiene e estética animal',
-            categoria: 'Estética',
-            preco: 60.00,
-            status: 'Ativo',
-            observacoes: 'Banho, secagem, tosa e corte de unhas'
+            preco: 60.00
           },
           {
             id: 5,
             nome: 'Exames Laboratoriais',
-            descricao: 'Coleta e análise de exames de sangue e urina',
-            categoria: 'Diagnóstico',
-            preco: 150.00,
-            status: 'Inativo',
-            observacoes: 'Hemograma completo e bioquímica'
+            preco: 150.00
           }
         ]);
       } finally {
@@ -99,7 +81,9 @@ const Servicos = () => {
         setServicos(servicosData);
       } catch (error) {
         console.error('Erro ao excluir serviço:', error);
-        alert('Erro ao excluir serviço. Tente novamente.');
+        // Exibir a mensagem específica do erro do backend
+        setErrorMessage(error.message || 'Erro ao excluir serviço. Tente novamente.');
+        setShowErrorModal(true);
       }
     }
   };
@@ -109,9 +93,7 @@ const Servicos = () => {
     const formData = new FormData(e.target);
     const dadosServico = {
       nome: formData.get('nome'),
-      preco: parseFloat(formData.get('preco')),
-      observacoes: formData.get('observacoes'),
-      status: editingService ? editingService.status : 'Ativo'
+      preco: parseFloat(formData.get('preco'))
     };
 
     try {
@@ -130,7 +112,9 @@ const Servicos = () => {
       setEditingService(null);
     } catch (error) {
       console.error('Erro ao salvar serviço:', error);
-      alert('Erro ao salvar serviço. Tente novamente.');
+      // Exibir a mensagem específica do erro do backend
+      setErrorMessage(error.message || 'Erro ao salvar serviço. Tente novamente.');
+      setShowErrorModal(true);
     }
   };
 
@@ -273,16 +257,6 @@ const Servicos = () => {
                     />
                   </div>
                   
-                  <div className="form-group">
-                    <label htmlFor="observacoes">Observações</label>
-                    <textarea
-                      id="observacoes"
-                      name="observacoes"
-                      rows="3"
-                      defaultValue={editingService?.observacoes || ''}
-                    />
-                  </div>
-                  
                   <div className="form-actions">
                     <button 
                       type="button" 
@@ -299,6 +273,28 @@ const Servicos = () => {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de Erro */}
+        {showErrorModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3>Erro</h3>
+              </div>
+              <div className="modal-body">
+                <p>{errorMessage}</p>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => setShowErrorModal(false)}
+                >
+                  OK
+                </button>
               </div>
             </div>
           </div>

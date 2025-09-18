@@ -45,8 +45,6 @@ public class Cliente {
     @Column(name = "data_cadastro", nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
     
-    @Column(name = "data_atualizacao")
-    private LocalDateTime dataAtualizacao;
     
     // Construtores
     public Cliente() {
@@ -119,19 +117,7 @@ public class Cliente {
         this.dataCadastro = dataCadastro;
     }
     
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
     
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
-    
-    // Método para atualizar data de modificação
-    @PreUpdate
-    public void preUpdate() {
-        this.dataAtualizacao = LocalDateTime.now();
-    }
     
     @Override
     public String toString() {
@@ -143,7 +129,6 @@ public class Cliente {
                 ", cep='" + cep + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", dataCadastro=" + dataCadastro +
-                ", dataAtualizacao=" + dataAtualizacao +
                 '}';
     }
 }

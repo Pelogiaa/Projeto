@@ -20,11 +20,6 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
     List<Servico> findByNomeContainingIgnoreCase(String nome);
     
     /**
-     * Busca serviços por categoria
-     */
-    List<Servico> findByCategoria(String categoria);
-    
-    /**
      * Busca serviços por status
      */
     List<Servico> findByStatus(Servico.StatusServico status);
@@ -35,22 +30,28 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
     List<Servico> findByStatusOrderByNome(Servico.StatusServico status);
     
     /**
-     * Busca serviços por nome, descrição ou categoria (busca geral)
+     * Busca serviços por nome, descrição ou observações (busca geral)
      */
     @Query("SELECT s FROM Servico s WHERE " +
            "LOWER(s.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(s.descricao) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(s.categoria) LIKE LOWER(CONCAT('%', :termo, '%'))")
-    List<Servico> buscarPorNomeDescricaoOuCategoria(@Param("termo") String termo);
+           "LOWER(s.observacoes) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Servico> buscarPorNomeDescricaoOuObservacoes(@Param("termo") String termo);
     
     /**
-     * Busca serviços ativos por nome, descrição ou categoria
+     * Busca serviços ativos por nome, descrição ou observações
      */
     @Query("SELECT s FROM Servico s WHERE s.status = 'ATIVO' AND (" +
            "LOWER(s.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(s.descricao) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(s.categoria) LIKE LOWER(CONCAT('%', :termo, '%')))")
-    List<Servico> buscarAtivosPorNomeDescricaoOuCategoria(@Param("termo") String termo);
+           "LOWER(s.observacoes) LIKE LOWER(CONCAT('%', :termo, '%')))")
+    List<Servico> buscarAtivosPorNomeDescricaoOuObservacoes(@Param("termo") String termo);
+    
+    /**
+     * Conta serviços por status
+     */
+    long countByStatus(Servico.StatusServico status);
+    
     
     /**
      * Busca serviços por faixa de preço
@@ -60,36 +61,14 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
                                      @Param("precoMax") java.math.BigDecimal precoMax);
     
     /**
-     * Busca serviços ativos por faixa de preço
-     */
-    @Query("SELECT s FROM Servico s WHERE s.status = 'ATIVO' AND s.preco BETWEEN :precoMin AND :precoMax")
-    List<Servico> buscarAtivosPorFaixaPreco(@Param("precoMin") java.math.BigDecimal precoMin, 
-                                           @Param("precoMax") java.math.BigDecimal precoMax);
-    
-    /**
      * Conta total de serviços
      */
     long count();
     
     /**
-     * Conta serviços por status
-     */
-    long countByStatus(Servico.StatusServico status);
-    
-    /**
-     * Conta serviços por categoria
-     */
-    long countByCategoria(String categoria);
-    
-    /**
      * Busca serviços ordenados por nome
      */
     List<Servico> findAllByOrderByNome();
-    
-    /**
-     * Busca serviços ativos ordenados por nome
-     */
-    List<Servico> findByStatusOrderByNomeAsc(Servico.StatusServico status);
     
     /**
      * Busca serviços ordenados por preço (crescente)
@@ -100,11 +79,6 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
      * Busca serviços ordenados por preço (decrescente)
      */
     List<Servico> findAllByOrderByPrecoDesc();
-    
-    /**
-     * Busca serviços ativos ordenados por preço (crescente)
-     */
-    List<Servico> findByStatusOrderByPrecoAsc(Servico.StatusServico status);
     
     /**
      * Verifica se existe serviço com o nome informado

@@ -10,9 +10,8 @@ public class ServicoDTO {
     
     private Long id;
     private String nome;
-    private String categoria;
-    private String descricao;
     private BigDecimal preco;
+    private String descricao;
     private String observacoes;
     private String status;
     private LocalDateTime dataCadastro;
@@ -21,13 +20,11 @@ public class ServicoDTO {
     // Construtores
     public ServicoDTO() {}
     
-    public ServicoDTO(Long id, String nome, String categoria, String descricao, 
-                     BigDecimal preco, String observacoes, String status) {
+    public ServicoDTO(Long id, String nome, BigDecimal preco, String descricao, String observacoes, String status) {
         this.id = id;
         this.nome = nome;
-        this.categoria = categoria;
-        this.descricao = descricao;
         this.preco = preco;
+        this.descricao = descricao;
         this.observacoes = observacoes;
         this.status = status;
     }
@@ -49,12 +46,12 @@ public class ServicoDTO {
         this.nome = nome;
     }
     
-    public String getCategoria() {
-        return categoria;
+    public BigDecimal getPreco() {
+        return preco;
     }
     
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
     }
     
     public String getDescricao() {
@@ -63,14 +60,6 @@ public class ServicoDTO {
     
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-    
-    public BigDecimal getPreco() {
-        return preco;
-    }
-    
-    public void setPreco(BigDecimal preco) {
-        this.preco = preco;
     }
     
     public String getObservacoes() {
@@ -110,7 +99,6 @@ public class ServicoDTO {
         return "ServicoDTO{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", categoria='" + categoria + '\'' +
                 ", preco=" + preco +
                 ", status='" + status + '\'' +
                 '}';

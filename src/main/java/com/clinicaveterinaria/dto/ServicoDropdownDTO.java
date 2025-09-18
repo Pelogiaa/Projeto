@@ -10,16 +10,14 @@ public class ServicoDropdownDTO {
     private Long id;
     private String nome;
     private BigDecimal preco;
-    private String categoria;
     
     // Construtores
     public ServicoDropdownDTO() {}
     
-    public ServicoDropdownDTO(Long id, String nome, BigDecimal preco, String categoria) {
+    public ServicoDropdownDTO(Long id, String nome, BigDecimal preco) {
         this.id = id;
         this.nome = nome;
         this.preco = preco;
-        this.categoria = categoria;
     }
     
     // Getters e Setters
@@ -47,21 +45,12 @@ public class ServicoDropdownDTO {
         this.preco = preco;
     }
     
-    public String getCategoria() {
-        return categoria;
-    }
-    
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-    
     @Override
     public String toString() {
         return "ServicoDropdownDTO{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", preco=" + preco +
-                ", categoria='" + categoria + '\'' +
                 '}';
     }
 }

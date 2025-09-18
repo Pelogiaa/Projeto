@@ -2,7 +2,7 @@
 // SERVIÇO DE API - CLINICA VETERINARIA
 // =====================================================
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://localhost:8080/api';
 
 class ApiService {
   // Método genérico para fazer requisições
@@ -200,6 +200,66 @@ class ApiService {
   // Contar serviços ativos
   async contarServicosAtivos() {
     return this.request('/servicos/contar/ativos');
+  }
+
+  // =====================================================
+  // AGENDAMENTOS
+  // =====================================================
+
+  // Buscar todos os agendamentos
+  async buscarAgendamentos() {
+    return this.request('/agendamentos');
+  }
+
+  // Buscar agendamento por ID
+  async buscarAgendamentoPorId(id) {
+    return this.request(`/agendamentos/${id}`);
+  }
+
+  // Criar novo agendamento
+  async criarAgendamento(dadosAgendamento) {
+    return this.request('/agendamentos', {
+      method: 'POST',
+      body: JSON.stringify(dadosAgendamento),
+    });
+  }
+
+  // Atualizar agendamento
+  async atualizarAgendamento(id, dadosAgendamento) {
+    return this.request(`/agendamentos/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(dadosAgendamento),
+    });
+  }
+
+  // Deletar agendamento
+  async deletarAgendamento(id) {
+    return this.request(`/agendamentos/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Buscar agendamentos por cliente
+
+  // Buscar agendamentos por animal
+  async buscarAgendamentosPorAnimal(idAnimal) {
+    return this.request(`/agendamentos/animal/${idAnimal}`);
+  }
+
+  // Buscar agendamentos por serviço
+  async buscarAgendamentosPorServico(idServico) {
+    return this.request(`/agendamentos/servico/${idServico}`);
+  }
+
+  // Buscar agendamentos por data
+  async buscarAgendamentosPorData(data) {
+    return this.request(`/agendamentos/data/${data}`);
+  }
+
+
+  // Contar total de agendamentos
+  async contarAgendamentos() {
+    return this.request('/agendamentos/contar');
   }
 }
 

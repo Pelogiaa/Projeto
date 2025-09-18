@@ -39,7 +39,7 @@ public class AnimalService {
         animal.setNomeAnimal(animalDTO.getNomeAnimal());
         animal.setIdade(animalDTO.getIdade());
         animal.setTipoAnimal(animalDTO.getTipoAnimal());
-        animal.setSexo(animalDTO.getSexo());
+        animal.setSexo(normalizarSexo(animalDTO.getSexo()));
         animal.setPeso(animalDTO.getPeso());
         animal.setRaca(animalDTO.getRaca());
         animal.setCor(animalDTO.getCor());
@@ -47,6 +47,20 @@ public class AnimalService {
         
         Animal animalSalvo = animalRepository.save(animal);
         return converterParaDTO(animalSalvo);
+    }
+    
+    /**
+     * Normaliza o valor do sexo para corrigir problemas de codificação
+     */
+    private String normalizarSexo(String sexo) {
+        if (sexo == null) return null;
+        
+        // Corrigir problemas de codificação
+        if (sexo.equals("FÃÂªmea") || sexo.contains("ÃÂª")) {
+            return "Fêmea";
+        }
+        
+        return sexo;
     }
     
     /**
@@ -68,7 +82,7 @@ public class AnimalService {
         animal.setPeso(animalDTO.getPeso());
         animal.setRaca(animalDTO.getRaca());
         animal.setCor(animalDTO.getCor());
-        animal.setDataAtualizacao(LocalDateTime.now());
+        // animal.setDataAtualizacao(LocalDateTime.now()); // Campo não existe no modelo
         
         Animal animalAtualizado = animalRepository.save(animal);
         return converterParaDTO(animalAtualizado);
@@ -176,7 +190,7 @@ public class AnimalService {
         dto.setRaca(animal.getRaca());
         dto.setCor(animal.getCor());
         dto.setDataCadastro(animal.getDataCadastro());
-        dto.setDataAtualizacao(animal.getDataAtualizacao());
+        // dto.setDataAtualizacao(animal.getDataAtualizacao()); // Campo não existe no modelo
         
         // Adiciona informações do cliente se disponível
         if (animal.getCliente() != null) {

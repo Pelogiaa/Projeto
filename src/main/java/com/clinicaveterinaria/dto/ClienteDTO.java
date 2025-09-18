@@ -33,7 +33,6 @@ public class ClienteDTO {
     private String cpf;
     
     private LocalDateTime dataCadastro;
-    private LocalDateTime dataAtualizacao;
     
     // Construtores
     public ClienteDTO() {}
@@ -104,13 +103,6 @@ public class ClienteDTO {
         this.dataCadastro = dataCadastro;
     }
     
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
-    
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
     
     @Override
     public String toString() {
@@ -122,7 +114,6 @@ public class ClienteDTO {
                 ", cep='" + cep + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", dataCadastro=" + dataCadastro +
-                ", dataAtualizacao=" + dataAtualizacao +
                 '}';
     }
 }

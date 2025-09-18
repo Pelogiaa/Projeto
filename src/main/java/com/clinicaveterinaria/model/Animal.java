@@ -38,7 +38,7 @@ public class Animal {
     private String tipoAnimal;
     
     @NotBlank(message = "Sexo é obrigatório")
-    @Pattern(regexp = "^(Macho|Fêmea)$", message = "Sexo deve ser 'Macho' ou 'Fêmea'")
+    @Pattern(regexp = "^(Macho|Fêmea|FÃÂªmea)$", message = "Sexo deve ser 'Macho' ou 'Fêmea'")
     @Column(name = "sexo", nullable = false, length = 10)
     private String sexo;
     
@@ -59,8 +59,6 @@ public class Animal {
     @Column(name = "data_cadastro", nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
     
-    @Column(name = "data_atualizacao")
-    private LocalDateTime dataAtualizacao;
     
     // Relacionamento com Cliente
     @ManyToOne(fetch = FetchType.LAZY)
@@ -163,13 +161,6 @@ public class Animal {
         this.dataCadastro = dataCadastro;
     }
     
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
-    
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
     
     public Cliente getCliente() {
         return cliente;
@@ -180,10 +171,6 @@ public class Animal {
     }
     
     // Método para atualizar data de modificação
-    @PreUpdate
-    public void preUpdate() {
-        this.dataAtualizacao = LocalDateTime.now();
-    }
     
     @Override
     public String toString() {
@@ -198,7 +185,6 @@ public class Animal {
                 ", raca='" + raca + '\'' +
                 ", cor='" + cor + '\'' +
                 ", dataCadastro=" + dataCadastro +
-                ", dataAtualizacao=" + dataAtualizacao +
                 '}';
     }
 }

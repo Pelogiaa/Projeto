@@ -18,14 +18,11 @@ public class Servico {
     @Column(name = "nome", nullable = false, length = 255)
     private String nome;
     
-    @Column(name = "categoria", nullable = false, length = 100)
-    private String categoria;
+    @Column(name = "preco", nullable = false, precision = 10, scale = 2)
+    private BigDecimal preco;
     
     @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
-    
-    @Column(name = "preco", nullable = false, precision = 10, scale = 2)
-    private BigDecimal preco;
     
     @Column(name = "observacoes", columnDefinition = "TEXT")
     private String observacoes;
@@ -43,15 +40,13 @@ public class Servico {
     // Construtores
     public Servico() {
         this.dataCadastro = LocalDateTime.now();
-        this.dataAtualizacao = LocalDateTime.now();
     }
     
-    public Servico(String nome, String categoria, String descricao, BigDecimal preco, String observacoes) {
+    public Servico(String nome, BigDecimal preco, String descricao, String observacoes) {
         this();
         this.nome = nome;
-        this.categoria = categoria;
-        this.descricao = descricao;
         this.preco = preco;
+        this.descricao = descricao;
         this.observacoes = observacoes;
     }
     
@@ -72,12 +67,12 @@ public class Servico {
         this.nome = nome;
     }
     
-    public String getCategoria() {
-        return categoria;
+    public BigDecimal getPreco() {
+        return preco;
     }
     
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
     }
     
     public String getDescricao() {
@@ -86,14 +81,6 @@ public class Servico {
     
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-    
-    public BigDecimal getPreco() {
-        return preco;
-    }
-    
-    public void setPreco(BigDecimal preco) {
-        this.preco = preco;
     }
     
     public String getObservacoes() {
@@ -128,17 +115,11 @@ public class Servico {
         this.dataAtualizacao = dataAtualizacao;
     }
     
-    @PreUpdate
-    public void preUpdate() {
-        this.dataAtualizacao = LocalDateTime.now();
-    }
-    
     @Override
     public String toString() {
         return "Servico{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", categoria='" + categoria + '\'' +
                 ", preco=" + preco +
                 ", status=" + status +
                 '}';

@@ -15,25 +15,51 @@ const Agendamentos = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [clientes, setClientes] = useState([]);
   const [animais, setAnimais] = useState([]);
+  const [animaisFiltrados, setAnimaisFiltrados] = useState([]);
   const [servicos, setServicos] = useState([]);
+  const [agendamentos, setAgendamentos] = useState([]);
+  const [clienteSelecionado, setClienteSelecionado] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedServico, setSelectedServico] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
+  // Função para filtrar animais por cliente
+  const filtrarAnimaisPorCliente = (idCliente) => {
+    if (idCliente) {
+      const animaisDoCliente = animais.filter(animal => animal.idCliente === parseInt(idCliente));
+      setAnimaisFiltrados(animaisDoCliente);
+    } else {
+      setAnimaisFiltrados(animais);
+    }
+  };
+
+  // Função para lidar com mudança de cliente
+  const handleClienteChange = (e) => {
+    const idCliente = e.target.value;
+    setClienteSelecionado(idCliente);
+    filtrarAnimaisPorCliente(idCliente);
+  };
 
   // Carregar dados da API
   useEffect(() => {
     const carregarDados = async () => {
       try {
         setLoading(true);
-        const [clientesData, animaisData, servicosData] = await Promise.all([
+        const [clientesData, animaisData, servicosData, agendamentosData] = await Promise.all([
           apiService.buscarClientesDropdown(),
           apiService.buscarAnimais(),
-          apiService.buscarServicosDropdown()
+          apiService.buscarServicosDropdown(),
+          apiService.buscarAgendamentos()
         ]);
         setClientes(clientesData);
         setAnimais(animaisData);
+        setAnimaisFiltrados(animaisData);
         setServicos(servicosData);
+        setAgendamentos(agendamentosData);
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
+        setErrorMessage('Erro ao carregar dados. Tente novamente.');
+        setShowErrorModal(true);
       } finally {
         setLoading(false);
       }
@@ -42,80 +68,96 @@ const Agendamentos = () => {
     carregarDados();
   }, []);
 
-  // Dados de exemplo
-  const [agendamentos] = useState([
-    {
-      id: 1,
-      data: '2024-03-15',
-      horario: '09:00',
-      cliente: 'João Silva',
-      animal: 'Rex',
-      servico: 'Consulta Veterinária',
-      preco: 120.00,
-      veterinario: 'Dr. Maria Santos',
-      status: 'Agendado',
-      observacoes: 'Primeira consulta, animal nervoso'
-    },
-    {
-      id: 2,
-      data: '2024-03-15',
-      horario: '10:30',
-      cliente: 'Maria Santos',
-      animal: 'Mimi',
-      servico: 'Vacinação',
-      preco: 80.00,
-      veterinario: 'Dr. Pedro Oliveira',
-      status: 'Confirmado',
-      observacoes: 'Vacina V10'
-    },
-    {
-      id: 3,
-      data: '2024-03-16',
-      horario: '14:00',
-      cliente: 'Pedro Oliveira',
-      animal: 'Thor',
-      servico: 'Cirurgia de Castração',
-      preco: 350.00,
-      veterinario: 'Dr. Ana Costa',
-      status: 'Realizado',
-      observacoes: 'Cirurgia realizada com sucesso'
-    },
-    {
-      id: 4,
-      data: '2024-03-16',
-      horario: '16:00',
-      cliente: 'João Silva',
-      animal: 'Rex',
-      servico: 'Banho e Tosa',
-      preco: 60.00,
-      veterinario: 'Tosador',
-      status: 'Cancelado',
-      observacoes: 'Cliente cancelou por motivos pessoais'
-    }
-  ]);
-
+  // Filtrar agendamentos
   const filteredAgendamentos = agendamentos.filter(agendamento =>
-    agendamento.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    agendamento.animal.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    agendamento.servico.toLowerCase().includes(searchTerm.toLowerCase())
+    (agendamento.nomeCliente && agendamento.nomeCliente.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (agendamento.nomeAnimal && agendamento.nomeAnimal.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (agendamento.nomeServico && agendamento.nomeServico.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleEdit = (agendamento) => {
     setEditingAppointment(agendamento);
+    // Encontrar o cliente do animal selecionado
+    const animal = animais.find(a => a.id === agendamento.idAnimal);
+    if (animal) {
+      setClienteSelecionado(animal.idCliente.toString());
+      filtrarAnimaisPorCliente(animal.idCliente.toString());
+    }
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este agendamento?')) {
-      console.log('Excluir agendamento:', id);
+      try {
+        await apiService.deletarAgendamento(id);
+        // Recarregar a lista de agendamentos
+        const agendamentosData = await apiService.buscarAgendamentos();
+        setAgendamentos(agendamentosData);
+      } catch (error) {
+        console.error('Erro ao excluir agendamento:', error);
+        setErrorMessage(error.message || 'Erro ao excluir agendamento. Tente novamente.');
+        setShowErrorModal(true);
+      }
     }
   };
 
-  // Função para lidar com mudança de serviço
-  const handleServicoChange = (servicoId) => {
-    const servico = servicos.find(s => s.id === parseInt(servicoId));
-    setSelectedServico(servico);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      setLoading(true);
+      
+      // Coletar dados do formulário
+      const formData = new FormData(e.target);
+      const dataAgendamento = formData.get('data');
+      const horaAgendamento = formData.get('horario');
+      const idAnimal = parseInt(formData.get('animal'));
+      const idServico = parseInt(formData.get('servico'));
+
+      // Validar se todos os campos foram preenchidos
+      if (!dataAgendamento || !horaAgendamento || !clienteSelecionado || !idAnimal || !idServico) {
+        setErrorMessage('Por favor, preencha todos os campos obrigatórios.');
+        setShowErrorModal(true);
+        return;
+      }
+
+      // Combinar data e hora em um LocalDateTime
+      const dataHoraCombinada = `${dataAgendamento}T${horaAgendamento}:00`;
+      
+      const data = {
+        dataAgendamento: dataHoraCombinada,
+        idCliente: parseInt(clienteSelecionado),
+        idAnimal: idAnimal,
+        idServico: idServico
+      };
+
+      if (editingAppointment) {
+        // Atualizar agendamento existente
+        await apiService.atualizarAgendamento(editingAppointment.id, data);
+      } else {
+        // Criar novo agendamento
+        await apiService.criarAgendamento(data);
+      }
+
+      // Recarregar a lista de agendamentos
+      const agendamentosData = await apiService.buscarAgendamentos();
+      setAgendamentos(agendamentosData);
+
+      // Fechar modal e limpar dados
+      setShowModal(false);
+      setEditingAppointment(null);
+      setClienteSelecionado('');
+      setAnimaisFiltrados(animais);
+      
+    } catch (error) {
+      console.error('Erro ao salvar agendamento:', error);
+      setErrorMessage(error.message || 'Erro ao salvar agendamento. Tente novamente.');
+      setShowErrorModal(true);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   // Função para formatar preço
   const formatPrice = (price) => {
@@ -137,8 +179,13 @@ const Agendamentos = () => {
     });
   };
 
-  const formatTime = (timeString) => {
-    return timeString;
+  const formatTime = (dateTimeString) => {
+    if (!dateTimeString) return '';
+    const date = new Date(dateTimeString);
+    return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
 
@@ -215,27 +262,27 @@ const Agendamentos = () => {
                       <div className="appointment-datetime">
                         <div className="datetime-info">
                           <div className="datetime-details">
-                            <span className="time-value">{formatTime(agendamento.horario)}</span>
-                            <span className="date-value">{formatDate(agendamento.data)}</span>
+                            <span className="time-value">{formatTime(agendamento.dataAgendamento)}</span>
+                            <span className="date-value">{formatDate(agendamento.dataAgendamento)}</span>
                           </div>
                         </div>
                       </div>
                     </td>
                     <td>
                       <div className="appointment-client">
-                        <span className="client-name">{agendamento.cliente}</span>
+                        <span className="client-name">{agendamento.nomeCliente}</span>
                       </div>
                     </td>
                     <td>
                       <div className="appointment-animal">
-                        <span className="animal-name">{agendamento.animal}</span>
+                        <span className="animal-name">{agendamento.nomeAnimal}</span>
                       </div>
                     </td>
                     <td>
-                      <span className="service-name">{agendamento.servico}</span>
+                      <span className="service-name">{agendamento.nomeServico}</span>
                     </td>
                     <td>
-                      <span className="service-price">{formatPrice(agendamento.preco)}</span>
+                      <span className="service-price">{formatPrice(agendamento.precoServico)}</span>
                     </td>
                     <td>
                       <div className="appointment-actions">
@@ -273,20 +320,23 @@ const Agendamentos = () => {
                   onClick={() => {
                     setShowModal(false);
                     setEditingAppointment(null);
+                    setClienteSelecionado('');
+                    setAnimaisFiltrados(animais);
                   }}
                 >
                   ×
                 </button>
               </div>
               <div className="modal-content">
-                <form className="appointment-form">
+                <form className="appointment-form" onSubmit={handleSubmit}>
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="data">Data</label>
                       <input
                         type="date"
                         id="data"
-                        defaultValue={editingAppointment?.data || ''}
+                        name="data"
+                        defaultValue={editingAppointment?.dataAgendamento ? editingAppointment.dataAgendamento.split('T')[0] : ''}
                         required
                       />
                     </div>
@@ -295,7 +345,8 @@ const Agendamentos = () => {
                       <input
                         type="time"
                         id="horario"
-                        defaultValue={editingAppointment?.horario || ''}
+                        name="horario"
+                        defaultValue={editingAppointment?.dataAgendamento ? editingAppointment.dataAgendamento.split('T')[1]?.substring(0, 5) : ''}
                         required
                       />
                     </div>
@@ -306,13 +357,15 @@ const Agendamentos = () => {
                       <label htmlFor="cliente">Cliente</label>
                       <select
                         id="cliente"
-                        defaultValue={editingAppointment?.cliente || ''}
+                        name="cliente"
+                        value={clienteSelecionado}
+                        onChange={handleClienteChange}
                         required
                         disabled={loading}
                       >
-                        <option value="">{loading ? 'Carregando...' : 'Selecione...'}</option>
+                        <option value="">{loading ? 'Carregando...' : 'Selecione um cliente'}</option>
                         {clientes.map((cliente) => (
-                          <option key={cliente.id} value={cliente.nome}>
+                          <option key={cliente.id} value={cliente.id}>
                             {cliente.nome} - {cliente.email}
                           </option>
                         ))}
@@ -322,13 +375,14 @@ const Agendamentos = () => {
                       <label htmlFor="animal">Animal</label>
                       <select
                         id="animal"
-                        defaultValue={editingAppointment?.animal || ''}
+                        name="animal"
+                        defaultValue={editingAppointment?.idAnimal || ''}
                         required
-                        disabled={loading}
+                        disabled={loading || !clienteSelecionado}
                       >
-                        <option value="">{loading ? 'Carregando...' : 'Selecione...'}</option>
-                        {animais.map((animal) => (
-                          <option key={animal.id} value={animal.nomeAnimal}>
+                        <option value="">{!clienteSelecionado ? 'Selecione um cliente primeiro' : loading ? 'Carregando...' : 'Selecione um animal'}</option>
+                        {animaisFiltrados.map((animal) => (
+                          <option key={animal.id} value={animal.id}>
                             {animal.nomeAnimal} - {animal.tipoAnimal}
                           </option>
                         ))}
@@ -340,8 +394,8 @@ const Agendamentos = () => {
                     <label htmlFor="servico">Serviço</label>
                     <select
                       id="servico"
-                      defaultValue={editingAppointment?.servico || ''}
-                      onChange={(e) => handleServicoChange(e.target.value)}
+                      name="servico"
+                      defaultValue={editingAppointment?.idServico || ''}
                       required
                       disabled={loading}
                     >
@@ -354,16 +408,6 @@ const Agendamentos = () => {
                     </select>
                   </div>
                   
-                  {/* Exibir preço do serviço selecionado */}
-                  {selectedServico && (
-                    <div className="form-group">
-                      <label>Preço do Serviço</label>
-                      <div className="price-display">
-                        <span className="price-value">{formatPrice(selectedServico.preco)}</span>
-                        <span className="price-category">({selectedServico.categoria})</span>
-                      </div>
-                    </div>
-                  )}
                   
                   
                   
@@ -374,6 +418,8 @@ const Agendamentos = () => {
                       onClick={() => {
                         setShowModal(false);
                         setEditingAppointment(null);
+                        setClienteSelecionado('');
+                        setAnimaisFiltrados(animais);
                       }}
                     >
                       Cancelar
@@ -383,6 +429,28 @@ const Agendamentos = () => {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de Erro */}
+        {showErrorModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3>Erro</h3>
+              </div>
+              <div className="modal-body">
+                <p>{errorMessage}</p>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => setShowErrorModal(false)}
+                >
+                  OK
+                </button>
               </div>
             </div>
           </div>

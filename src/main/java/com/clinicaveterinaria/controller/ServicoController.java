@@ -64,6 +64,7 @@ public class ServicoController {
         }
     }
     
+    
     /**
      * Busca serviços para dropdown
      */
@@ -120,18 +121,6 @@ public class ServicoController {
         }
     }
     
-    /**
-     * Busca serviços por categoria
-     */
-    @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<ServicoDTO>> buscarServicosPorCategoria(@PathVariable String categoria) {
-        try {
-            List<ServicoDTO> servicos = servicoService.buscarServicosPorCategoria(categoria);
-            return ResponseEntity.ok(servicos);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
     
     /**
      * Atualiza um serviço existente
