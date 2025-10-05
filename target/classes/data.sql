@@ -32,24 +32,24 @@ CREATE TABLE IF NOT EXISTS tab_agendamentos (
 );
 
 -- Inserir dados de exemplo para serviços (apenas se a tabela estiver vazia)
-INSERT INTO tab_servicos (nome, preco, descricao, observacoes, status, data_cadastro) 
-SELECT 'Consulta Veterinária', 120.00, 'Atendimento clínico completo para cães e gatos', 'Inclui exame físico completo e orientações', 'ATIVO', CURRENT_TIMESTAMP
+INSERT INTO tab_servicos (nome, preco, descricao, observacoes, data_cadastro) 
+SELECT 'Consulta Veterinária', 120.00, 'Atendimento clínico completo para cães e gatos', 'Inclui exame físico completo e orientações', CURRENT_TIMESTAMP
 WHERE NOT EXISTS (SELECT 1 FROM tab_servicos WHERE nome = 'Consulta Veterinária');
 
-INSERT INTO tab_servicos (nome, preco, descricao, observacoes, status, data_cadastro) 
-SELECT 'Vacinação', 80.00, 'Aplicação de vacinas essenciais para pets', 'Vacinas V8, V10, antirrábica e outras', 'ATIVO', CURRENT_TIMESTAMP
+INSERT INTO tab_servicos (nome, preco, descricao, observacoes, data_cadastro) 
+SELECT 'Vacinação', 80.00, 'Aplicação de vacinas essenciais para pets', 'Vacinas V8, V10, antirrábica e outras', CURRENT_TIMESTAMP
 WHERE NOT EXISTS (SELECT 1 FROM tab_servicos WHERE nome = 'Vacinação');
 
-INSERT INTO tab_servicos (nome, preco, descricao, observacoes, status, data_cadastro) 
-SELECT 'Cirurgia de Castração', 350.00, 'Procedimento cirúrgico para castração de cães e gatos', 'Inclui anestesia e pós-operatório', 'ATIVO', CURRENT_TIMESTAMP
+INSERT INTO tab_servicos (nome, preco, descricao, observacoes, data_cadastro) 
+SELECT 'Cirurgia de Castração', 350.00, 'Procedimento cirúrgico para castração de cães e gatos', 'Inclui anestesia e pós-operatório', CURRENT_TIMESTAMP
 WHERE NOT EXISTS (SELECT 1 FROM tab_servicos WHERE nome = 'Cirurgia de Castração');
 
-INSERT INTO tab_servicos (nome, preco, descricao, observacoes, status, data_cadastro) 
-SELECT 'Banho e Tosa', 60.00, 'Serviço completo de higiene e estética animal', 'Banho, secagem, tosa e corte de unhas', 'ATIVO', CURRENT_TIMESTAMP
+INSERT INTO tab_servicos (nome, preco, descricao, observacoes, data_cadastro) 
+SELECT 'Banho e Tosa', 60.00, 'Serviço completo de higiene e estética animal', 'Banho, secagem, tosa e corte de unhas', CURRENT_TIMESTAMP
 WHERE NOT EXISTS (SELECT 1 FROM tab_servicos WHERE nome = 'Banho e Tosa');
 
-INSERT INTO tab_servicos (nome, preco, descricao, observacoes, status, data_cadastro) 
-SELECT 'Exames Laboratoriais', 150.00, 'Coleta e análise de exames de sangue e urina', 'Hemograma completo e bioquímica', 'ATIVO', CURRENT_TIMESTAMP
+INSERT INTO tab_servicos (nome, preco, descricao, observacoes, data_cadastro) 
+SELECT 'Exames Laboratoriais', 150.00, 'Coleta e análise de exames de sangue e urina', 'Hemograma completo e bioquímica', CURRENT_TIMESTAMP
 WHERE NOT EXISTS (SELECT 1 FROM tab_servicos WHERE nome = 'Exames Laboratoriais');
 
 -- Inserir dados de exemplo para animais (apenas se a tabela estiver vazia)

@@ -24,9 +24,9 @@ public class DataController {
         try {
             // Verificar se já existem dados
             String countQuery = "SELECT COUNT(*) FROM tab_servicos";
-            int count = jdbcTemplate.queryForObject(countQuery, Integer.class);
+            Integer count = jdbcTemplate.queryForObject(countQuery, Integer.class);
             
-            if (count > 0) {
+            if (count != null && count > 0) {
                 return ResponseEntity.ok().body("Dados já existem na tabela");
             }
             
@@ -65,9 +65,9 @@ public class DataController {
         try {
             // Verificar se a tabela já existe
             String checkQuery = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'tab_cliente'";
-            int tableExists = jdbcTemplate.queryForObject(checkQuery, Integer.class);
+            Integer tableExists = jdbcTemplate.queryForObject(checkQuery, Integer.class);
             
-            if (tableExists > 0) {
+            if (tableExists != null && tableExists > 0) {
                 return ResponseEntity.ok().body("Tabela tab_cliente já existe");
             }
             
@@ -104,9 +104,9 @@ public class DataController {
         try {
             // Verificar se já existem dados
             String countQuery = "SELECT COUNT(*) FROM tab_cliente";
-            int count = jdbcTemplate.queryForObject(countQuery, Integer.class);
+            Integer count = jdbcTemplate.queryForObject(countQuery, Integer.class);
             
-            if (count > 0) {
+            if (count != null && count > 0) {
                 return ResponseEntity.ok().body("Dados já existem na tabela de clientes");
             }
             
@@ -143,9 +143,9 @@ public class DataController {
         try {
             // Verificar se a tabela já existe
             String checkQuery = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'tab_animais'";
-            int tableExists = jdbcTemplate.queryForObject(checkQuery, Integer.class);
+            Integer tableExists = jdbcTemplate.queryForObject(checkQuery, Integer.class);
             
-            if (tableExists > 0) {
+            if (tableExists != null && tableExists > 0) {
                 return ResponseEntity.ok().body("Tabela tab_animais já existe");
             }
             
@@ -184,9 +184,9 @@ public class DataController {
         try {
             // Verificar se a tabela já existe
             String checkQuery = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'tab_agendamentos'";
-            int tableExists = jdbcTemplate.queryForObject(checkQuery, Integer.class);
+            Integer tableExists = jdbcTemplate.queryForObject(checkQuery, Integer.class);
             
-            if (tableExists > 0) {
+            if (tableExists != null && tableExists > 0) {
                 return ResponseEntity.ok().body("Tabela tab_agendamentos já existe");
             }
             
@@ -221,9 +221,9 @@ public class DataController {
         try {
             // Verificar se já existem dados
             String countQuery = "SELECT COUNT(*) FROM tab_animais";
-            int count = jdbcTemplate.queryForObject(countQuery, Integer.class);
+            Integer count = jdbcTemplate.queryForObject(countQuery, Integer.class);
             
-            if (count > 0) {
+            if (count != null && count > 0) {
                 return ResponseEntity.ok().body("Dados já existem na tabela de animais");
             }
             
@@ -251,9 +251,9 @@ public class DataController {
         try {
             // Verificar se já existem dados
             String countQuery = "SELECT COUNT(*) FROM tab_agendamentos";
-            int count = jdbcTemplate.queryForObject(countQuery, Integer.class);
+            Integer count = jdbcTemplate.queryForObject(countQuery, Integer.class);
             
-            if (count > 0) {
+            if (count != null && count > 0) {
                 return ResponseEntity.ok().body("Dados já existem na tabela de agendamentos");
             }
             
@@ -310,7 +310,7 @@ public class DataController {
         try {
             // Primeiro, verificar quantos serviços existem
             String countQuery = "SELECT COUNT(*) FROM tab_servicos";
-            int totalAntes = jdbcTemplate.queryForObject(countQuery, Integer.class);
+            Integer totalAntes = jdbcTemplate.queryForObject(countQuery, Integer.class);
             
             // Remover duplicados baseado no nome (manter apenas o primeiro)
             String removeDuplicadosQuery = """
@@ -325,7 +325,7 @@ public class DataController {
             int removidos = jdbcTemplate.update(removeDuplicadosQuery);
             
             // Verificar quantos serviços restaram
-            int totalDepois = jdbcTemplate.queryForObject(countQuery, Integer.class);
+            Integer totalDepois = jdbcTemplate.queryForObject(countQuery, Integer.class);
             
             return ResponseEntity.ok().body(String.format(
                 "Serviços duplicados removidos com sucesso! " +
@@ -392,9 +392,9 @@ public class DataController {
                 WHERE table_name = 'tab_animais' 
                 AND column_name IN ('raca', 'cor')
                 """;
-            int columnCount = jdbcTemplate.queryForObject(checkQuery, Integer.class);
+            Integer columnCount = jdbcTemplate.queryForObject(checkQuery, Integer.class);
             
-            if (columnCount >= 2) {
+            if (columnCount != null && columnCount >= 2) {
                 return ResponseEntity.ok().body("Colunas raça e cor já existem na tabela tab_animais");
             }
             

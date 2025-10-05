@@ -141,11 +141,6 @@ class ApiService {
     return this.request(endpoint);
   }
 
-  // Buscar serviços ativos
-  async buscarServicosAtivos(termo = '') {
-    const endpoint = termo ? `/servicos/ativos?termo=${encodeURIComponent(termo)}` : '/servicos/ativos';
-    return this.request(endpoint);
-  }
 
   // Buscar serviço por ID
   async buscarServicoPorId(id) {
@@ -185,22 +180,12 @@ class ApiService {
     return this.request(`/servicos/categoria/${encodeURIComponent(categoria)}`);
   }
 
-  // Alterar status do serviço
-  async alterarStatusServico(id) {
-    return this.request(`/servicos/${id}/status`, {
-      method: 'PATCH',
-    });
-  }
 
   // Contar total de serviços
   async contarServicos() {
     return this.request('/servicos/contar');
   }
 
-  // Contar serviços ativos
-  async contarServicosAtivos() {
-    return this.request('/servicos/contar/ativos');
-  }
 
   // =====================================================
   // AGENDAMENTOS

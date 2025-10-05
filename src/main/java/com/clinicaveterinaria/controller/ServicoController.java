@@ -51,18 +51,6 @@ public class ServicoController {
         }
     }
     
-    /**
-     * Busca serviços ativos
-     */
-    @GetMapping("/ativos")
-    public ResponseEntity<List<ServicoDTO>> buscarServicosAtivos() {
-        try {
-            List<ServicoDTO> servicos = servicoService.buscarServicosAtivos();
-            return ResponseEntity.ok(servicos);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
     
     
     /**
@@ -108,18 +96,6 @@ public class ServicoController {
         }
     }
     
-    /**
-     * Busca serviços ativos por termo de busca
-     */
-    @GetMapping("/ativos/buscar")
-    public ResponseEntity<List<ServicoDTO>> buscarServicosAtivos(@RequestParam(required = false) String termo) {
-        try {
-            List<ServicoDTO> servicos = servicoService.buscarServicosAtivos(termo);
-            return ResponseEntity.ok(servicos);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
     
     
     /**
@@ -154,21 +130,6 @@ public class ServicoController {
         }
     }
     
-    /**
-     * Altera status do serviço (ativa/desativa)
-     */
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<?> alterarStatusServico(@PathVariable Long id) {
-        try {
-            ServicoDTO servicoAtualizado = servicoService.alterarStatusServico(id);
-            return ResponseEntity.ok(servicoAtualizado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Erro interno do servidor"));
-        }
-    }
     
     /**
      * Conta total de serviços
@@ -183,18 +144,6 @@ public class ServicoController {
         }
     }
     
-    /**
-     * Conta serviços ativos
-     */
-    @GetMapping("/contar/ativos")
-    public ResponseEntity<Long> contarServicosAtivos() {
-        try {
-            long total = servicoService.contarServicosAtivos();
-            return ResponseEntity.ok(total);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
     
     /**
      * Classe para resposta de erro

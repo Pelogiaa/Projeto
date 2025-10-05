@@ -1,7 +1,6 @@
 package com.clinicaveterinaria.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * DTO para transferência de dados de Serviço
@@ -11,22 +10,14 @@ public class ServicoDTO {
     private Long id;
     private String nome;
     private BigDecimal preco;
-    private String descricao;
-    private String observacoes;
-    private String status;
-    private LocalDateTime dataCadastro;
-    private LocalDateTime dataAtualizacao;
     
     // Construtores
     public ServicoDTO() {}
     
-    public ServicoDTO(Long id, String nome, BigDecimal preco, String descricao, String observacoes, String status) {
+    public ServicoDTO(Long id, String nome, BigDecimal preco) {
         this.id = id;
         this.nome = nome;
         this.preco = preco;
-        this.descricao = descricao;
-        this.observacoes = observacoes;
-        this.status = status;
     }
     
     // Getters e Setters
@@ -54,45 +45,6 @@ public class ServicoDTO {
         this.preco = preco;
     }
     
-    public String getDescricao() {
-        return descricao;
-    }
-    
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-    
-    public String getObservacoes() {
-        return observacoes;
-    }
-    
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-    
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
-    public LocalDateTime getDataCadastro() {
-        return dataCadastro;
-    }
-    
-    public void setDataCadastro(LocalDateTime dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
-    
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
-    
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
     
     @Override
     public String toString() {
@@ -100,7 +52,6 @@ public class ServicoDTO {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", preco=" + preco +
-                ", status='" + status + '\'' +
                 '}';
     }
 }

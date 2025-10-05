@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,11 +34,6 @@ public class ServicoService {
         dto.setId(servico.getId());
         dto.setNome(servico.getNome());
         dto.setPreco(servico.getPreco());
-        dto.setDescricao(servico.getDescricao());
-        dto.setObservacoes(servico.getObservacoes());
-        dto.setStatus(servico.getStatus().getDescricao());
-        dto.setDataCadastro(servico.getDataCadastro());
-        dto.setDataAtualizacao(servico.getDataAtualizacao());
         return dto;
     }
     
@@ -51,19 +45,6 @@ public class ServicoService {
         servico.setId(dto.getId());
         servico.setNome(dto.getNome());
         servico.setPreco(dto.getPreco());
-        servico.setDescricao(dto.getDescricao());
-        servico.setObservacoes(dto.getObservacoes());
-        
-        // Converter string para enum
-        if (dto.getStatus() != null) {
-            try {
-                servico.setStatus(Servico.StatusServico.valueOf(dto.getStatus().toUpperCase()));
-            } catch (IllegalArgumentException e) {
-                servico.setStatus(Servico.StatusServico.ATIVO);
-            }
-        } else {
-            servico.setStatus(Servico.StatusServico.ATIVO);
-        }
         
         return servico;
     }
@@ -102,16 +83,6 @@ public class ServicoService {
                 .collect(Collectors.toList());
     }
     
-    /**
-     * Busca serviços ativos
-     */
-    @Transactional(readOnly = true)
-    public List<ServicoDTO> buscarServicosAtivos() {
-        return servicoRepository.findByStatusOrderByNome(Servico.StatusServico.ATIVO)
-                .stream()
-                .map(this::converterParaDTO)
-                .collect(Collectors.toList());
-    }
     
     
     /**
@@ -132,7 +103,7 @@ public class ServicoService {
             return buscarTodosServicos();
         }
         
-        return servicoRepository.buscarPorNomeDescricaoOuObservacoes(termo.trim())
+        return servicoRepository.buscarPorNome(termo.trim())
                 .stream()
                 .map(this::converterParaDTO)
                 .collect(Collectors.toList());
@@ -155,18 +126,6 @@ public class ServicoService {
         // Atualizar dados
         servicoExistente.setNome(servicoDTO.getNome());
         servicoExistente.setPreco(servicoDTO.getPreco());
-        servicoExistente.setDescricao(servicoDTO.getDescricao());
-        servicoExistente.setObservacoes(servicoDTO.getObservacoes());
-        servicoExistente.setDataAtualizacao(LocalDateTime.now());
-        
-        // Converter string para enum
-        if (servicoDTO.getStatus() != null) {
-            try {
-                servicoExistente.setStatus(Servico.StatusServico.valueOf(servicoDTO.getStatus().toUpperCase()));
-            } catch (IllegalArgumentException e) {
-                // Manter status atual se inválido
-            }
-        }
         
         Servico servicoAtualizado = servicoRepository.save(servicoExistente);
         return converterParaDTO(servicoAtualizado);
@@ -225,47 +184,6 @@ public class ServicoService {
         return servicoRepository.existsById(id);
     }
     
-    /**
-     * Busca serviços ativos por termo de busca
-     */
-    @Transactional(readOnly = true)
-    public List<ServicoDTO> buscarServicosAtivos(String termo) {
-        if (termo == null || termo.trim().isEmpty()) {
-            return buscarServicosAtivos();
-        }
-        
-        return servicoRepository.buscarAtivosPorNomeDescricaoOuObservacoes(termo.trim())
-                .stream()
-                .map(this::converterParaDTO)
-                .collect(Collectors.toList());
-    }
-    
-    /**
-     * Altera status do serviço (ativa/desativa)
-     */
-    public ServicoDTO alterarStatusServico(Long id) {
-        Servico servico = servicoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Serviço não encontrado com ID: " + id));
-        
-        // Alternar status
-        if (servico.getStatus() == Servico.StatusServico.ATIVO) {
-            servico.setStatus(Servico.StatusServico.INATIVO);
-        } else {
-            servico.setStatus(Servico.StatusServico.ATIVO);
-        }
-        servico.setDataAtualizacao(LocalDateTime.now());
-        
-        Servico servicoAtualizado = servicoRepository.save(servico);
-        return converterParaDTO(servicoAtualizado);
-    }
-    
-    /**
-     * Conta serviços ativos
-     */
-    @Transactional(readOnly = true)
-    public long contarServicosAtivos() {
-        return servicoRepository.countByStatus(Servico.StatusServico.ATIVO);
-    }
     
     /**
      * Busca serviços para dropdown (apenas ID, nome e preço)
@@ -274,8 +192,6 @@ public class ServicoService {
     public List<ServicoDropdownDTO> buscarServicosParaDropdown() {
         return servicoRepository.findAllByOrderByNome()
                 .stream()
-                .filter(servico -> servico.getStatus() == Servico.StatusServico.ATIVO || 
-                                 (servico.getStatus() != null && servico.getStatus().getDescricao().equals("Ativo")))
                 .map(servico -> new ServicoDropdownDTO(
                     servico.getId(),
                     servico.getNome(),

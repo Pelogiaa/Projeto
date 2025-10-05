@@ -19,7 +19,6 @@ com\clinicaveterinaria\ClinicaVeterinariaApplication.class
 com\clinicaveterinaria\controller\ClienteController$ErrorResponse.class
 com\clinicaveterinaria\controller\AgendamentoController$ErrorResponse.class
 com\clinicaveterinaria\model\Cliente.class
-com\clinicaveterinaria\model\Servico$StatusServico.class
 com\clinicaveterinaria\model\Servico.class
 com\clinicaveterinaria\service\AnimalService.class
 com\clinicaveterinaria\controller\AnimalController.class

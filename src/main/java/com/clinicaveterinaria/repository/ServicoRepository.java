@@ -19,38 +19,14 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
      */
     List<Servico> findByNomeContainingIgnoreCase(String nome);
     
-    /**
-     * Busca serviços por status
-     */
-    List<Servico> findByStatus(Servico.StatusServico status);
     
     /**
-     * Busca serviços ativos
-     */
-    List<Servico> findByStatusOrderByNome(Servico.StatusServico status);
-    
-    /**
-     * Busca serviços por nome, descrição ou observações (busca geral)
+     * Busca serviços por nome (busca geral)
      */
     @Query("SELECT s FROM Servico s WHERE " +
-           "LOWER(s.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(s.descricao) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(s.observacoes) LIKE LOWER(CONCAT('%', :termo, '%'))")
-    List<Servico> buscarPorNomeDescricaoOuObservacoes(@Param("termo") String termo);
+           "LOWER(s.nome) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Servico> buscarPorNome(@Param("termo") String termo);
     
-    /**
-     * Busca serviços ativos por nome, descrição ou observações
-     */
-    @Query("SELECT s FROM Servico s WHERE s.status = 'ATIVO' AND (" +
-           "LOWER(s.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(s.descricao) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(s.observacoes) LIKE LOWER(CONCAT('%', :termo, '%')))")
-    List<Servico> buscarAtivosPorNomeDescricaoOuObservacoes(@Param("termo") String termo);
-    
-    /**
-     * Conta serviços por status
-     */
-    long countByStatus(Servico.StatusServico status);
     
     
     /**
